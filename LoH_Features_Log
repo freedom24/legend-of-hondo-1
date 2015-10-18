@@ -1,0 +1,987 @@
+Legend of Hondo
+----------------
+Features Log
+==============================
+
+________________________________________________________
+--- C O M P L E T E D ---
+========================================================
+
+
+Server Settings
+= = = = = = = = = = = = = = = = = 
+scripts/managers/player_creation_manager.lua
+- - - - - - -
+- Players start with 50,000 credits total.
+- New Artisans also get a wind survey tool.
+- Every new player gets a backpack.
+- All players start with a Tantel Helmet, Chest Plate, and Boots.
+
+
+scripts/managers/player_manager.lua
+- - - - - - -
+- 3x Global XP rate.
+- Group XP Bonus is 0%, so people don't feel obligated to dual log clients to max XP gain.
+- Datapad Increases: 5 Pets (CAN be increase with SEAs and skills), 5 Droids, 5 Vehicles.
+- Disabled Anti-Decay Kits and Crate of Free Resources vet rewards. This keeps the universe moving forward, always in flux, always fresh.
+
+scripts/managers/resource_manager.lua
+- - - - - - -
+- Resource quality like original swg (it is not "throttled").
+
+scripts/managers/skill_mod_manager.lua
+- - - - - - -
+- Enabled Stored Pets and Taming Bonus SEAs.
+
+scripts/managers/loot_manager.lua
+- - - - - - -
+- Made the Armor Attachment list match Clothing Attachment list, so both can have all the same stats.
+
+
+
+
+Skill Points and New Players
+= = = = = = = = = = = = = = = = = 
+tre/loh_001.tre/datatables/skill/skills.iff
+- - - - - - -
+- Novice Artisan, Brawler, Marksman, Medic, and Scout cost 1 Skill Point.
+- Entertainer, Dancer, Image Designer, Musician, and Politian do not require skill points. (Credit: Kinshi @ Tarkin.org)
+- Each box of Medic only requires 1 skill point.
+
+tre/loh_001.tre/datatables/creation/starting_locations.iff
+- - - - - - -
+- New players can only start in Mos Entha
+
+tre/loh_001.tre/datatables/clientregion/dantooine.iff
+tre/loh_001.tre/datatables/clientregion/tatooine.iff
+- - - - - - -
+- Allow the player to place structures in NPC cities (Credit: Kinshi @ Tarkin.org)
+- Has the amusing side effect of allowing lairs to spawn within cities, which is nice for the extra danger and randomness.
+
+tre/loh_001.tre/appearance/thm_prp_kiosk_statue.apt
+- - - - - - -
+- Changed "Blue Frog" model to an Image Design terminal
+
+scripts/managers/planet_manager.lua
+- - - - - - -
+- Removed default "Character Builder" locations
+
+
+
+
+Power/Maint/Housing Adjustments
+= = = = = = = = = = = = = = = = = 
+scripts/object/installation/[GENERATORS/HARVESTERS]
+
+- Increased Min/Max BER on all harvesters and (less so) generators
+- Increased max possible hopper size for harvesters (but not generators).
+- Reduced power and maint costs harvesters.
+- Reduced maint cost on factories and houses/guild halls.
+- Left the factory power cost normal, as it only drains when running and a single player doesn't need thousands of blah instantly.
+- General idea was to keep power important, but not crippling.
+- All small, medium, large houses, guild halls, and player city decore can be built Datooine/Tatooine. 
+
+src/server/zone/objects/building/BuildingObject.idl
+src/server/zone/objects/building/BuildingObjectImplementation.cpp
+- - - - - - -
+- Player houses have 300 item storage per lot. 
+- Civic structures have 1000 item storage. 
+- Any building that does not require lots has 1000 item storage.
+
+src/server/zone/managers/planet/PlanetManagerImplementation.cpp
+- - - - - - -
+- Allowed placing player structures in NPC cities.
+
+src/server/zone/managers/structure/StructureManager.cpp
+- - - - - - -
+- No longer checks if there is "enough space" to place an object or building, so objects and buildings can be placed where ever. 
+- Also allows lamp posts to be placed on the steps of buildings, etc. 
+
+src/server/zone/objects/creature/commands/RotateFurnitureCommand.h
+src/server/zone/objects/scene/SceneObject.idl
+src/server/zone/objects/scene/SceneObjectImplementation.cpp
+- - - - - - -
+- Allowed items placed inside structures to be rotated on all three axis
+
+
+
+
+
+
+Medic, Medicine, and Buffs
+= = = = = = = = = = = = = = = = = 
+scripts/object/tangible/beta/beta_terminal_wound.lua
+scripts/screenplays/hondo/buff_terminals.lua
+- - - - - - -
+- Terminal name is "Wound Terminal"
+- Modified this unused terminal so that it can be a buff and heal bot. 
+- Uses the values that are used for the Character Builder buffs.
+- Located inside hospitals on Tatooine (Bestine, Mos Eisley, Mos Entha, Mos Espa)
+- Heals battle fatigue.
+- Removes DoTs, because sometimes they get bugged.
+- Removes buffs and empties stomach, because sometimes they get bugged.
+- Does not heal health/action wounds, but does heal mind wounds and battle fatigue.
+
+scripts/managers/player_manager.lua
+- - - - - - -
+- Medical buffs set to 800.
+- Performance buffs set to 400.  
+
+src/server/zone/managers/player/PlayerManagerImplementation.cpp
+- - - - - - -
+- Buff terminal stat changes, limited regen boost (to encourage Medic "active healing" game play)
+- Charges 5,000 credits (taken from cash on hand).
+- 800 Heath / Action / Mind 
+- 400 Strength / Quickness / Focus.
+- 100 Constitution / Stamina / Willpower.
+- The player can still craft medial and food buffs. 
+
+src/server/zone/objects/creature/buffs/PerformanceBuffImplementation.cpp
+- - - - - - -
+- Disabled Entertainer buffs, because the process sucked and is useless in a single player environment.
+
+scripts/object/tangible/medicine/crafted/crafted_stimpack_sm_s1_a.lua
+scripts/object/tangible/medicine/crafted/crafted_stimpack_sm_s1_b.lua
+scripts/object/tangible/medicine/crafted/crafted_stimpack_sm_s1_c.lua
+scripts/object/tangible/medicine/crafted/crafted_stimpack_sm_s1_d.lua
+scripts/object/tangible/medicine/crafted/crafted_stimpack_sm_s1_e.lua
+- - - - - - -
+- Increased the min/max values on Stim-A/B/C.
+- Increase the min values on Stim-D/E. These remain the most potent.
+
+src/server/zone/objects/creature/commands/HealDamageCommand.h
+src/server/zone/objects/creature/commands/HealWoundCommand.h
+- - - - - - -
+- Healing self and healing pets with the Medic abilities now grants XP, for damage and wounds.
+- Damage Healing XP awarded = 25% power of the health + action healed (default)
+- Wound Healing XP awarded = 2.5x power of the heal (default)
+- This was done in the hopes people could level by actually playing the game, rather than doing it AFK with a second character. 
+- The 3x global XP rate on top of the default XP values really make it nice to level Medic while out leveling the combat classes.
+
+src/server/zone/managers/sui/SuiManager.cpp
+- - - - - - -
+- Disabled wound healing using the Buff Terminal and Character Builder Terminal (blue frog). 
+- People can heal wounds with the dirt cheap Medic skills rather than the Buff Terminal!
+- Retained the Mind wound Battle Fatigue healing option, so as to no require Entertainer.
+
+
+scripts/object/tangible/medicine/crafted/medpack_enhance_action_c.lua
+scripts/object/tangible/medicine/crafted/medpack_enhance_action_d.lua
+scripts/object/tangible/medicine/crafted/medpack_enhance_health_c.lua
+scripts/object/tangible/medicine/crafted/medpack_enhance_health_d.lua
+- - - - - - -
+- Reduced the max possible experimentation, because default SWG Doc buffs made the game way too easy.
+- They will still be better than the Buff Terminal with a decked out Doctor.
+
+scripts/object/tangible/medicine/crafted/medpack_enhance_constitution_a.lua
+scripts/object/tangible/medicine/crafted/medpack_enhance_constitution_b.lua
+scripts/object/tangible/medicine/crafted/medpack_enhance_constitution_c.lua
+scripts/object/tangible/medicine/crafted/medpack_enhance_constitution_d.lua
+scripts/object/tangible/medicine/crafted/medpack_enhance_stamina_a.lua
+scripts/object/tangible/medicine/crafted/medpack_enhance_stamina_b.lua
+scripts/object/tangible/medicine/crafted/medpack_enhance_stamina_c.lua
+scripts/object/tangible/medicine/crafted/medpack_enhance_stamina_d.lua
+- Nerfed all regen buffs into the ground to encourage "active healing". 
+- Top end went from 800 down to 200, but with a Doc suit that will go quite a bit more than 200.
+
+scripts/object/tangible/medicine/crafted/medpack_enhance_quickness_c.lua
+scripts/object/tangible/medicine/crafted/medpack_enhance_quickness_d.lua
+scripts/object/tangible/medicine/crafted/medpack_enhance_strength_c.lua
+scripts/object/tangible/medicine/crafted/medpack_enhance_strength_d.lua
+- Reduced top end buffs to encourage "active healing".
+- A (100), B (200), C (300), D (400)
+
+
+
+
+
+Specials Adjustment
+= = = = = = = = = = = = = = = = =
+scripts/commands/eyeShot.lua
+scripts/commands/headShot1.lua
+scripts/commands/headShot2.lua
+scripts/commands/headShot3.lua
+scripts/commands/melee1hScatterHit1.lua
+scripts/commands/melee1hScatterHit2.lua
+scripts/commands/melee2hHeadHit1.lua
+scripts/commands/melee2hHeadHit2.lua
+scripts/commands/melee2hHeadHit3.lua
+scripts/commands/melee2hMindHit1.lua
+scripts/commands/melee2hMindHit2.lua
+scripts/commands/mindShot1.lua
+scripts/commands/mindShot2.lua
+scripts/commands/saber1hComboHit1.lua
+scripts/commands/saber1hComboHit2.lua
+scripts/commands/saber1hComboHit3.lua
+scripts/commands/saber1hHeadHit1.lua
+scripts/commands/saber1hHeadHit2.lua
+scripts/commands/saber1hHeadHit3.lua
+scripts/commands/scatterShot1.lua
+scripts/commands/scatterShot2.lua
+scripts/commands/unarmedCombo1.lua
+scripts/commands/unarmedCombo2.lua
+scripts/commands/unarmedHeadHit1.lua
+- - - - - - -
+- Changed all specials that direactly damaged Mind directly to damage Health or Action instead
+- Specials that hit a random pool still have a 15% chance to hit the Mind pool.
+- This will effect both players and NPCs.
+- The idea being it normalized professions such that drilling down the weakest spot, Mind, isn't THE ONLY way to play the game. And, in a group no class is useless for "doing the wrong kind of damage", becuase every class can hit Health or Action with their specials. DoTs and random hits will still take the Mind down, but at least it's more strategic than "SPAM MY MIND HIT SPECIAL!!!"...
+
+scripts/commands/headShot1.lua
+scripts/commands/headShot2.lua
+scripts/commands/legShot1.lua
+scripts/commands/legShot2.lua
+scripts/commands/Melee1hHit1.lua
+scripts/commands/polearmHit1.lua
+scripts/commands/polearmHit2.lua
+scripts/commands/unarmedHit1.lua
+scripts/commands/unarmedHit2.lua
+- - - - - - -
+- These specials were utterly punishing for leveling players, so I made them more like Body Shot, which works well with starter gear/skill.
+- Mostly accuracy increases.
+
+
+
+
+Starter Gear and Vehicle Merchants
+= = = = = = = = = = = = = = = = =
+scripts/screenplays/hondo/merchants/starter_gear.lua
+scripts/screenplays/hondo/merchants/starter_weapons.lua
+scripts/mobile/hondo/merchants/starter_gear.lua
+scripts/mobile/hondo/merchants/starter_weapons.lua
+scripts/mobile/conversations/hondo/merchants/starter_gear_conv.lua
+scripts/mobile/conversations/hondo/merchants/starter_weapons_conv.lua
+- - - - - - -
+- Starter Gear Merchants. Sells basic tools, armor, structures, and weapons.
+
+scripts/screenplays/hondo/merchants/crazy_larry.lua
+scripts/mobile/hondo/merchants/merch_crazy_larry.lua
+scripts/mobile/conversations/hondo/merchants/crazy_larry_conv.lua
+- - - - - - -
+- Vehicle salesman.
+
+
+
+
+Travel System
+= = = = = = = = = = = = = = = = = 
+scripts/screenplays/hondo/travel/*
+scripts/mobile/conversations/hondo/travel/*
+scripts/mobile/hondo/travel/*
+- - - - - - -
+- Added character conversation based travel from Mos Espa to various locations on Dantooine, Dathomir, Endor, and Lok.
+- Travel from Mos Espa to a safe harbor is 5,000 credits.
+- Travel from Mos Espa to a dungeon is 10,000 credits.
+- Travel back to Mos Espa is free.
+- Add a replacement shuttle port system for public transport on Dantooine, Dathomir, Endor, and Tatooine. Tickets are 250 credits.
+
+scripts/object/building/military/outpost_starport.lua
+scripts/object/building/player/city/shuttleport_corellia.lua
+scripts/object/building/player/city/shuttleport_naboo.lua
+scripts/object/building/player/city/shuttleport_tatooine.lua
+scripts/object/building/tatooine/shuttleport_tatooine.lua
+scripts/object/building/tatooine/starport_tatooine.lua
+scripts/screenplays/hondo/travel/galactic_travel_from_theed.lua
+- - - - - - -
+- Disable Ticket Terminals, Ticket Droids, and replaced NPC shuttles with a static model.
+- Tatooine starport shuttles remain disabled so as to no overlap with the Onak, which is parked in Mos Espa.
+
+
+
+
+
+
+Scout and Ranger
+= = = = = = = = = = = = = = = = = 
+src/server/zone/managers/creature/CreatureManagerImplementation.cpp
+- - - - - - -
+- Any creature that usually drops less than 30 units in SWG will drop roughly 30 units for Master Rangers and around 2 units for Novice Scouts. The value increases gradually as the player gains more Creature Harvesting skill.
+- Novice and Master Rangers will both grant and be personally granted the harvest bonus when in a group. For a non Ranger to get this bonus, they must be within 64m of the Ranger. Of course, the Ranger is always in range of himself! :)
+- The group bonus thing was a fix I made for the Tarkin server and I added it here even though there isn't a group XP bonus in Legend of Hondo (at this time).
+
+src/server/zone/managers/minigames/ForageManagerImplementation.cpp
+- - - - - - -
+- Grant Wilderness Survival XP for the following:
+- Scout Foraging Success 
+- Searching Lair Success (+ 15 bonus XP)
+- Shellfish Survey Tool Success
+- Medical Foraging Success (50% WS XP, but grants 100% Medical XP)
+- XP Amounts: Min 1, Max 135 (+15 for lair searching), with foraging skill mod increasing the chance for higher XP. 
+
+src/server/zone/managers/minigames/ForageManagerImplementation.cpp
+- - - - - - -
+- Slightly improved the chance to find Eggs rather than Creature Samples, based on Creature Harvesting Skill. 
+
+scripts/mobile/corellia/murra.lua
+- - - - - - -
+- Fixed ability to be milked 
+
+src/server/zone/objects/creature/events/MilkCreatureTask.h
+- - - - - - -
+- XP on Milking Success  
+- Tested Milkable Creature Types: Bageraset, Humbaba, Paralope, Sharnaff(2), Piket, Thune, Bolma, Brackaset, Bolle Bol, 
+Bantha, Gurnaset, Snorbal, Falumpaset, Fambaa(7), Gualama, Ikopi, Kaduu, Murra, Kahmurra, Cu Pa, Eopie, Ronto(3),
+Tybis, Lesser Plains Bol, Bordok.
+
+scripts/object/building/poi/scout_camp_s0.lua
+scripts/object/building/poi/scout_camp_s1.lua
+scripts/object/building/poi/scout_camp_s2.lua
+scripts/object/building/poi/scout_camp_s3.lua
+scripts/object/building/poi/scout_camp_s4.lua
+scripts/object/building/poi/scout_camp_s5.lua
+- - - - - - -
+- Added some items to camps.
+- Basic Camp: Explorer Mission Terminal
+- Multiperson: Destroy/Deliver Mission Terminal
+- Improved: Bounty Hunter Mission Terminal
+- High Quality: Rebel and Imperial Mission Terminals
+- Field Base Kit: Bank and Insurance Terminals
+- High Tech Field Base Kit: Bank, Insurance, and Buff Terminals
+
+scripts/mobile/spawn/hunting_mission/corellia_hunting_missions.lua
+scripts/mobile/spawn/hunting_mission/dantooine_hunting_missions.lua
+scripts/mobile/spawn/hunting_mission/dathomir_hunting_missions.lua
+scripts/mobile/spawn/hunting_mission/endor_hunting_missions.lua
+scripts/mobile/spawn/hunting_mission/lok_hunting_missions.lua
+scripts/mobile/spawn/hunting_mission/naboo_hunting_missions.lua
+scripts/mobile/spawn/hunting_mission/rori_hunting_missions.lua
+scripts/mobile/spawn/hunting_mission/talus_hunting_missions.lua
+scripts/mobile/spawn/hunting_mission/tatooine_hunting_missions.lua
+scripts/mobile/spawn/hunting_mission/yavin4_hunting_missions.lua
+scripts/mobile/spawn/serverobjects.lua
+- - - - - - -
+- Added new Hunting Mission Spawn Groups (as there weren't any appropriate groups already)
+- When I went to add Wilderness Survival XP to these missions, I discovered that they were not implimented correctly. Apart
+from the generally poor way SOE made these missions, SWGEmu seems to have based the potential targets off any 
+possible MOB spawn on any planet, which is incorrect (and in some cases, out-right broken as it includes faction NPC, some 
+of which don't even spawn). Consiquently, I went ahead and solved this problem by creating new spawn groups for each 
+planet that consist of only valid animal type creatures. Most (if not all) non-quest, non-dungeon animals that can spawn on 
+a planet are available.
+
+src/server/zone/managers/mission/MissionManagerImplementation.cpp
+- - - - - - -
+- Completely changed how the available creature types are determined.
+- All available creature types are displayed in the mission terminal, regardless of player level and group size. Just because you take the mission, doesn't mean you'll actually find those creatures! :)
+- Adjusted the mission credit payout method to more appropriately match the difficulty of the mission. Reward range is approx 450cr to 25,000cr. Creature Knowledge skill grants a bonus!
+- Difficulty level displayed is now the average level of the target creatures (rather than the not very helpful 1, 2, or 3 that used to be displayed).
+- Removed the roleplay from the mission descriptions server side, for clarity and to fix SOE typos without requiring a client update.
+- Titles for Hunting Missions on the terminals show the target creature name rather than the roleplay name. [Animal]: a humbaba 
+
+src/server/zone/objects/mission/HuntingMissionObjectiveImplementation.cpp
+- - - - - - -
+- Granted Wilderness Survival XP upon completion.
+- XP granted is based upon your Foraging skill and the credit payout, so SEAs can be used for bonus XP!
+
+src/server/zone/objects/mission/MissionObject.idl
+src/server/zone/objects/mission/MissionObjectImplementation.cpp
+src/server/zone/objects/mission/HuntingMissionObjectiveImplementation.cpp
+src/server/zone/packets/mission/MissionObjectDeltaMessage3.h
+- - - - - - -
+- Mission description, when viewed in the datapad, now shows how many kills are remaining.
+- Unfortunately, the text is loaded from the client side files by default each time you log in, but it gets updated again once you kill one of the mission creatures.
+- Titles for Hunting Missions on the terminals show the target creature name rather than the roleplay name. [Kill 15]: a humbaba
+
+src/server/zone/managers/mission/MissionManagerImplementation.cpp
+- - - - - - -
+- Titles for Destroy Missions on the terminals show the target creature name rather than the roleplay name. [Difficulty 9]: humbaba lair 
+
+
+
+
+
+
+
+Weapons, Armor, and Components
+= = = = = = = = = = = = = = = = = 
+scripts/object/weapon/melee/polearm/lance_staff_wood_s1.lua
+scripts/object/weapon/melee/polearm/lance_staff_metal.lua
+scripts/object/weapon/melee/axe/axe_heavy_duty.lua
+scripts/object/weapon/melee/knife/knife_dagger.lua
+scripts/object/weapon/melee/knife/knife_survival.lua
+scripts/object/weapon/ranged/carbine/carbine_cdef.lua
+scripts/object/weapon/ranged/pistol/pistol_cdef.lua
+scripts/object/weapon/ranged/rifle/rifle_cdef.lua
+- - - - - - -
+- Adjusted the Min/Max/Speed ranges for crafted versions such that they can actually be better than the ones granted for free to Brawler/Marksman (and the ones sold by the Starter Weapons vendor).
+- This always bugged me about the starter weapons - a perfectly crafted one was still not as good as a free one! Why even have them? lol... Now, that they can be better than the free ones there is a point to making them.
+
+
+scripts/object/tangible/wearables/armor/[ARMORSET]
+- - - - - - -
+- Changed the default values so the sets can be sold by NPCs as basic armor sets.
+- Crafted armor will cover all stats except stun and lightsaber, with some stats being special resists on some armor types. 
+- Stun and Lightsaber are the only vulnerabilities (for sake of ease).
+- Max condition ranges between 30k - 45k
+- Bone/Mabari/IthDefender/KashBlack: 24 Kin, 24 Eng, 12 Ele, 4 Acid / 40H, 20A, 20M
+- Tantel/Ubese/: 20 Kin, 40 Eng, 4 Ele, 12 Acid / 40H, 20A, 20M
+- Chitin/Marauder: 40 Kin, 20 Eng, 12 Ele, 4 Acid / 40H, 20A, 20M
+- Comp/Marine/Stormtrooper/IthGuard/KashCer: 50 All / 50H, 30A, 30M
+- BH/Mando/RIS/IthSent/KashHunt: 55 All / 35H, 35A, 35M
+
+scripts/object/tangible/component/armor/armor_layer_acid.lua
+scripts/object/tangible/component/armor/armor_layer_blast.lua
+scripts/object/tangible/component/armor/armor_layer_cold.lua
+scripts/object/tangible/component/armor/armor_layer_electrical.lua
+scripts/object/tangible/component/armor/armor_layer_energy.lua
+scripts/object/tangible/component/armor/armor_layer_heat.lua
+scripts/object/tangible/component/armor/armor_layer_kinetic.lua
+scripts/object/tangible/component/armor/armor_layer_ris.lua
+scripts/object/tangible/component/armor/armor_layer_stun.lua
+- - - - - - -
+- Reduced the highest possible encumberance values from 20 to 8.
+- Secondary stat buffs are lower and encumberance values on crafted armor can easily make a piece useless.
+
+scripts/object/tangible/component/armor/armor_segment_bone.lua
+scripts/object/tangible/component/armor/armor_segment_bone_advanced.lua
+scripts/object/tangible/component/armor/armor_segment_chitin.lua
+scripts/object/tangible/component/armor/armor_segment_chitin_advanced.lua
+scripts/object/tangible/component/armor/armor_segment_composite.lua
+scripts/object/tangible/component/armor/armor_segment_composite_advanced.lua
+scripts/object/tangible/component/armor/armor_segment_kashyyykian_black_mtn.lua
+scripts/object/tangible/component/armor/armor_segment_kashyyykian_black_mtn_advanced.lua
+scripts/object/tangible/component/armor/armor_segment_kashyyykian_ceremonial.lua
+scripts/object/tangible/component/armor/armor_segment_kashyyykian_ceremonial_advanced.lua
+scripts/object/tangible/component/armor/armor_segment_kashyyykian_hunting.lua
+scripts/object/tangible/component/armor/armor_segment_kashyyykian_hunting_advanced.lua
+scripts/object/tangible/component/armor/armor_segment_padded.lua
+scripts/object/tangible/component/armor/armor_segment_padded_advanced.lua
+scripts/object/tangible/component/armor/armor_segment_ris.lua
+scripts/object/tangible/component/armor/armor_segment_ris_acklay.lua
+scripts/object/tangible/component/armor/armor_segment_ubese.lua
+scripts/object/tangible/component/armor/armor_segment_ubese_advanced.lua
+- - - - - - -
+- Reduced the highest possible encumberance values.
+- Increased the condition and effectiveness on advanced segments
+- These crafted segments added too much encumberance. 
+
+
+scripts/object/tangible/wearables/armor/bone/[ARMORPIECE]
+scripts/object/tangible/wearables/armor/zam/[ARMORPIECE]
+- - - - - - -
+- Brought the min base effectiveness up from 1 to 10 and the max base effectiveness up from 20 to 30. 
+
+scripts/loot/items/creature/[Armor Components].lua
+- - - - - - -
+- Revamped the following looted armor components so that they're genuinely useful.
+- Reduced Encumberance values.
+- Brackaset Plates: Acid, Blast, Cold, Heat with a bonus to Blast. Small HAM bonus possible.
+- Famba Plates: Acid, Blast, Cold, Heat with a bonus to Cold. Small HAM bonus possible.
+- Sharnaff Plates: Acid, Blast, Cold, Heat with a bonus to Heat. Small HAM bonus possible.
+- Voritor Scales: Increased max stack size to 20.
+- Kimogila Scales: Made these an upgrade to Voritor Scales by making them Energy, Kinetic, Acid and improving the min/max values. Min stack size is 3, max is also 20. Kimo's have the best Acid resit.
+- Krayt Dragon Scales: Made these the ultimate upgrade for lizard scales by increasing the Energy and Kinetic min/max values and leaving the Acid, Blast, Cold, Heat. Min stack size is 3, but max is only 12.
+
+scripts/loot/items/creature/[Armor Segments].lua
+scripts/loot/items/geonosian_lab/kliknik_reinforced_chitin_armor_segment.lua
+- - - - - - -
+- Revamped the following looted armor segments so that they're genuinely useful.
+[Chitin Armor]
+- Armor Effectiveness normalization 
+- Brackaset Segment: Acid, Blast, Cold, Heat with a bonus to Blast and Integrity.
+- Sharnaff Segment: Acid, Blast, Cold, Heat with a bonus to Heat and Integrity.
+- Kliknik Segment: Increased Integrity bonus and added Health Encumberance bonus.
+- Reinforced Kliknik Segment: Increased min/max Armor Effectiveness.
+[Padded Armor]
+- Rancor Segment: Added Acid and Blast so it covers all resists.
+- Famba Segment: Lesser version of a Rancor Segment (lower stats and higher Encumberance).
+[Bone Armor]
+- Voritor Segment: Increase max stack size to 20.
+- Kimogila Segment: Upgraded Voritor scale with better stats, bonus Integrity, and Acid protection. Kimo's have the best Acid resit.
+
+scripts/mobile/tatooine/ronto.lua
+scripts/mobile/dantooine/piket.lua
+scripts/mobile/dantooine/piket_longhorn_female.lua
+scripts/mobile/dantooine/piket_walker.lua
+scripts/mobile/endor/merek_assassin.lua
+scripts/mobile/endor/merek_cavern_creeper.lua
+scripts/mobile/endor/merek_deaths_head.lua
+scripts/mobile/endor/merek_harvester.lua
+scripts/mobile/dathomir/malkloc.lua
+scripts/mobile/dathomir/malkloc_bull.lua
+scripts/mobile/dathomir/malkloc_plainswalker.lua
+scripts/mobile/lok/vesp.lua
+scripts/mobile/lok/vesp_hunter.lua
+scripts/mobile/lok/vesp_scavenger.lua
+scripts/mobile/tatooine/dune_lizard.lua
+- - - - - - -
+- Spread the looted parts to more creatures. 
+- Note that some creatures are not available, due to their planets being disabled. I plan to add those creatures in a future update.
+- Sharnaff: Ronto (Tatooine), Piket (Dantooine)
+- Kliknik (common loot): Merek (Endor)
+- Famba: Malklok (Dathomir)
+- Voritor: Dragonet (Tatooine), Vesp (Lok)
+
+scripts/object/draft_schematic/armor/[Various Files]
+scripts/object/draft_schematic/clothing/[Various Armor Related Files]
+scripts/object/draft_schematic/munitions/[Various Files]
+scripts/object/draft_schematic/weapon/[Various Files]
+- - - - - - -
+- Removed requirement for overly specific named resources.
+- Some planets are not available and some requirements were too specific for a single player game.
+
+
+
+
+
+Crafting Loot, XP, and Timings 
+= = = = = = = = = = = = = = = = = 
+src/server/zone/objects/player/sessions/crafting/CraftingSessionImplementation.cpp
+- - - - - - -
+- Changed the Practice Mode XP bonus when crafting from 5% to 75%.
+- Removed crafting tool timer (1 second per item). 
+- Granted a chance to win a piece of loot (Junk to good quality SEAs) while crafting using practice mode.
+- Loot chance is based upon item complexity, tool quality (not station), and assembly skill (appropriate to the item being made).
+- Loot quality is based upon the quality of the item created and assembly skill.
+
+MMOCoreORB/src/server/zone/objects/installation/factory/FactoryObjectImplementation.cpp
+- - - - - - -
+- Significantly reduced factory run times, but still based upon item complexity. Min of 1 second per item. 
+
+/home/swgemu/workspace/MMOCoreORB/src/server/zone/objects/factorycrate/FactoryCrate.idl
+- - - - - - -
+- Increase max factory crate size to 1,000.
+
+scripts/object/draft_schematic/bio_engineer/dna_template/dna_template_generic.lua
+- - - - - - -
+- Increased XP granted to 1250 from 50. 
+- 510,000 Crafting XP required for the profession. 
+- 170,000 DNA Samping XP required = roughly 380 DNA samples.
+- Therefore, 78 crafts in practice mode at 896 XP each (before bonuses) will grant enough XP to level the profession using all the DNA collected to level the DNA Sampling line.
+
+
+
+
+
+
+Loot, Junk, and Junk Dealers
+= = = = = = = = = = = = = = = = = 
+- The general idea with these changes is that with only one player, there isn't any division of labor at all - if the one player doesn't loot it, it doesn't exist! Normally, many players are out there collecting loot and then selling it to other players. Without the combined efforts brought by many players, the default loot system was broken. 
+- I've tried to make it such that one person can go about their play and actually have a real chance to earn what they need themselves. However, the amount of time required is still so collossal for a single player that I will later add in an NPC merchant system to augment the lack of players selling, at the very least, basic items.
+
+optional/bin/scripts/managers/loot_manager.lua
+- - - - - - -
+- Increased the chance of getting a exceptional and legendary item.
+- Increased the stat bonus to exceptional and legendary items.
+- Increased the chance to find an SEA.
+- Made both SEA types have the same full array of stat possibilities.
+
+scripts/loot/items/attachment_armor.lua
+scripts/loot/items/attachment_clothing.lua
+scripts/loot/items/creature/*.lua
+scripts/loot/items/forage/*.lua
+scripts/loot/items/loot_schematic/*.lua
+scripts/loot/items/painting/*.lua
+scripts/loot/items/recycler/*.lua
+scripts/loot/items/skill_buff/*.lua
+- - - - - - -
+- Junk Dealers, in this single player game, are a primary source of income. They are the ONLY people can sell anything to! 
+- Junk Dealers will now purchase the items listed above, as well as other misc items.
+
+src/server/zone/objects/resource/ResourceManager.idl
+- - - - - - -
+- Reduced the Crate of Free Resource to 500 units.
+
+scripts/loot/groups/junk.lua
+- - - - - - -
+- Anything that can drop junk now has a chance to drop an SEA instead.
+- SEA quality is based on the creature level, so this is self balancing.
+- Can also drop Crate of Free Resources (Resource Deed)
+
+scripts/loot/groups/tailor_components.lua
+- - - - - - -
+- Added most crafted Tailor components. Note they do not have a junk dealer value.
+
+scripts/loot/items/hondo/
+- - - - - - -
+- My custom loot items are in here.
+
+scripts/mobile/[PLANET]/[CREATURE].lua
+- - - - - - -
+- All wild and lair spawned creatures have the chance to drop junk (including SEAs), clothing, and weapons (in that order).
+- With the exception anything that aleady had a loot table.
+- Included planets that aren't in use at the moment, as I will later add many of their creatures to the planets are in use.
+
+
+
+
+
+Skill Terminal
+= = = = = = = = = = = = = = = = = 
+scripts/object/tangible/beta/beta_terminal_xp.lua
+- - - - - - -
+- Give free profession training for Dancer, Entertainer, Image Designer, Merchant, Musician, Politician.
+- None of these professions are worth/possible leveling in a single player environment.
+- Also added learning of all languages as well.
+- Located in the Mos Espa cantina.
+
+UPDATE:
+- Added Artisan, Architect, Armorsmith, Chef, Droid Engineer, Tailor, Shipwright, and Weaponsmith. 
+- The "crafting grind", while being a good resource and credit sink, is ultimately a huge waste of time that isn't fun, even with the XP boosts.
+- I considered making all crafting use General Crafting Experience, but useless grind is still useless grind and this took much less time to impliment. 
+- The real fun is gathering resources and making things you will actually use.
+
+
+
+
+Simple Flight and 24 Hour Limit
+= = = = = = = = = = = = = = = = = 
+src/server/zone/managers/player/creation/PlayerCreationManager.cpp
+- - - - - - -
+- Add a basic Scyk ship to the datapad of new players. Can be used to fly around on the planets. This feature is rough around the edges, but still cool!
+- Removed the 1 character creation per 24 hour limit, because it sucked in general and was plain broken due to the server not being on all the time.
+- Customized the welcome message pop-up for Legend of Hondo.
+
+scripts/mobile/conversations/hondo/travel/wolten_kinhara_from_espa_conv.lua
+- - - - - - -
+- Updated conversation with some information (and story) about the fighter ship.
+
+
+
+
+
+City and Building Permssions
+= = = = = = = = = = = = = = = = = 
+*WARNING* NOT A MULTIPLAYER FRIENDLY UPDATE!!
+- Keep in mind this project is unforgivingly designed to cater to a single player (me!). As such, some updates will break multiplayer play. This is one of those updates. You've been warned. :)
+- Previous changes were to this regard were too tame for a single player game.
+
+src/server/zone/managers/city/CityDecorationTask.h
+src/server/zone/managers/city/CityManagerImplementation.cpp
+src/server/zone/managers/structure/StructureManager.cpp
+src/server/zone/objects/creature/commands/PlaceStructureCommand.h
+src/server/zone/objects/creature/commands/PlaceStructureModeCommand.h
+- - - - - - -
+- Removed many checks and limitations when placing buildings in cities, to allow any player to place buildings and decorations.
+- Can place objects "too close" to each other, including overlapping. Player must use caution when placing objects!
+- Can place up to 30 decorations in an NPC city.
+- Can place any building, city decoration item, and city decoration deed in an NPC city.
+- Can place any building on any planet where building is permitted (Dantooine and Tatooine).
+- Politician profession skills are still required, but they are available on the XP terminal in the Mos Espa cantina.
+
+
+
+
+
+Junk Dealers: Super Deluxe!
+= = = = = = = = = = = = = = = = = 
+scripts/loot/[MISC FILES]
+- - - - - - -
+- Corrected loot weighting values on junk loot and tailor part groups. 
+- Added new loot group for recycler parts. 
+- Made "Junk" into the Super Deluxe general loot group for all occassions! Taking a page from other single player games, the idea here is give the player a wide variety of loot to use or sell, considerng they can't buy any from the nonexistent other players. 
+- Added some cheap furniture and 3 otherwise unobtainable small plants to the junk group.
+- Added junk seller prices to sore more items that did not have them, including quest and themepark rewards.
+
+scripts/mobile/[PLANET]/[CREATURE].lua
+- - - - - - -
+- Corrected loot weighting on all mobile/[PLANETNAME] mobs.
+- Any creature that did not already drop loot will now have a 25% chance to drop loot from the Super Deluxe Junk group.
+
+scripts/managers/spawn_manager/tatooine.lua
+- - - - - - -
+- In a previous fix, I added:
+- Clothing/Armor Junk Dealer, Imperial Oasis, Tatooine
+- Weapon Junk Dealer, Anchorhead, Tatooine
+
+src/server/zone/objects/creature/junkdealer/JunkdealerCreatureImplementation.cpp
+src/server/zone/objects/player/sessions/crafting/CraftingSessionImplementation.cpp
+- - - - - - -
+- Junk Dealers (Generic type) will purchase player crafted items.
+- Will buy factory crated items only after they are taken out of the crate.
+- Value based upon player skill. final item complexity, and "real world" luck. 
+- As with loot, the junk value is set when the item is created and is unknown/invisible to the player until they sell the item.
+- Factory crate items all have the same junk value.
+
+
+
+
+
+Stormtooper Corp. Updates
+= = = = = = = = = = = = = = = = = 
+scripts/mobile/faction/imperial/[Stortrooper Types]
+- - - - - - -
+- Fixed the ridiculously enormous size of Dark Troopers.
+- Replaced the silly "Duck-Feet" Darktrooper models with the normal black Stormtrooper model.
+- Adjusted the looks of various troops to match their ranks. 
+
+tre/palette/stormtrooper_stripes.pal
+tre/palette/swamptrooper.pal
+- - - - - - -
+- Enhanced the red, green, and blue Stormtrooper stripe colors.
+- Made the Swamptroopers more swampy and less florecent green weirdness...
+
+
+
+
+
+NPC Merchant System
+= = = = = = = = = = = = = = = = = 
+- Created an extensible framework for selling items using NPC conversations. 
+- NPCs have friends/foes, using the various factions and the player relationships with those factions determines if the merchant will do business and what the final price will be. 
+- There are four basic relationships: Friend, Friend of Friend, Enemy, and Enemy of Enemy. 
+
+scripts/screenplays/hondo/merchants/merchant_system.lua
+scripts/screenplays/hondo/merchants/[MERCHANTS]
+- - - - - - -
+- Common functionality used by all merchants is in the merchant_system.lua. I will add additional features in time. See the README in the merchants screenplay directory for more details.
+- Each merchant file contains the list of their personal relationships and the list of what they sell.
+
+scripts/mobile/hondo/merchants/[MERCHANTS]
+scripts/conversations/mobile/hondo/merchants/[MERCHANTS]
+- - - - - - -
+- Unique characters and conversations per merchant. 
+- Conversations were written in the Lua files rather than creating new STF files. 
+
+Fixes included:
+- Corrected the encumberance values on system generated (Merchant sold) Composite Armor.
+- Reduced the damage range on the system generated (Merchant sold) Light Lightning Cannon.
+
+
+
+
+
+Advanced Structure Placement
+= = = = = = = = = = = = = = = = = 
+src/server/zone/objects/tangible/deed/structure/StructureDeed.idl
+src/server/zone/objects/tangible/deed/structure/StructureDeedImplementation.cpp
+tre/clienteffect/house_plop_ruler.cef
+- - - - - - -
+**** WARNING ****
+- This feature bypasses many limitations on placing a stucture and therefore should not be used by novices or the general public. If you use this feature on a multiplayer server, I highly suggest limiting it to GM's only.
+- Added the "House Plop" ability (something I started working on in 2014 for Kinshi of the Tarkin server. Only took me a year to figure it out! lol...).
+- Place a structure, from its deed using a new radial menu option, almost anywhere, with the door rotated to face the direction your character is facing.
+- Use the Show Ruler option to extend a green line out from your character to make it easier to see what way you are actually facing.
+- It's not a perfect solution, but it does make it much easier to line up player buildings with NPC structures. 
+
+
+
+
+
+Combat Tatwification!
+= = = = = = = = = = = = = = = = = 
+NOTE: 
+- I am sure most pre-cu SWG fans will hate what I am doing here. Oh well! This project is for me, not them. 
+- I don't use Jedi at all, so none of the changes I have made take them into consideration. I did alter their special attacks for consistency/clarity though.
+
+Purpose: 
+- LoH is a single player game, so I want to make it such that a person doesn't NEED to multi-box a "healer" just to play the game. 
+- To mesh all combat professions with the use Medic 444x rather than said secondary healer.
+- To give Health/Action/Mind their own sensible purposes and remove the weirdness that was killing one's self by using special attacks, etc. 
+
+Health: 
+- The only stat which will cause incap/death. 
+- All attacks can hit it.
+- Stimpacks and Quick Heal heal it.
+- Tend Damage DOES NOT heal it.
+- Does not regen in combat (and extremely slowly out of combat - use Medic!).
+
+Action: 
+- Overall 15% chance enemy attacks will damage it.
+- All "weapon ability HAM costs" are averaged and applied only to the Action pool. 
+- Incap does not occur when it is empty. 
+- DoTs still effect it.
+- Tend Damage heals it.
+- Stimpacks DO NOT heal it.
+- Regens more slowly in combat, but very fast when sitting out of combat.
+
+Mind:
+- Primary function is to manage healing of Health/Action, and the removal of States/DoTs.
+- No enemy can directly attack it.
+- DoTs still effect it.
+- Incap does not occur when it is empty. 
+- Tend Damage, Tend Wound, and Quick Heal all cause Mind wounds (but not Focus/Willpower wounds), with the amount of wounds based on various factors.
+- In combat regen was nerfed into the ground (because it is TOTALLY "live forever or until I run out of stimpacks" OVERPOWERED otherwise...), but very fast when sitting out of combat.
+- When player lands a good hit he regens 100 Mind.
+- Blue Milk still heals mind, until the player's "drink filling" is full. 
+
+
+src/server/zone/objects/creature/CreatureObjectImplementation.cpp
+- - - - - - -
+- Health does not regenerate while in combat.
+- 50% Action and Mind regen while in combat.
+- Action and Mind regen is much higher while sitting when not in combat.
+- 15% Action and Mind bonus when kneeling, even in combat.
+
+src/server/zone/managers/combat/CombatManager.cpp
+- - - - - - -
+- Weapon HAM costs are now only applied to the Action pool. The amount applied is the average of the normal health, action, and mind costs.
+- Removed chance to hit Mind with direct attacks. 85% Health, 15% Action
+- Removed Mind damage.
+- Merged Mind wound application into Action calculations.
+- Wounds are increased to primary stats (Health/Action/Mind) when damaged in combat.
+- Apply less damage to Mind type armor than Action type, by choosing randomly between them when damage is applied to Action pool.
+- Added a "Shocked Rally" Mind heal, based on available Action, when the player is hit for more than 25% of their Health in a single hit. Min of 500 health required to get this "kick in the pants"!
+
+src/server/zone/managers/player/PlayerManagerImplementation.cpp
+- - - - - - -
+- Wounds are always applied when cloning. Random amount higher than default SWG, but less if you clone where your data is stored.
+- Insured items decay at 3% rather than 1%. Uninsured still decay at 5%.
+- Incapacitation and death only occur if the player is out of Health.
+
+src/server/zone/objects/creature/commands/HealDamageCommand.h
+- Stimpacks are now only for healing Health.
+- Set amount of Action healed to 1 regardless of stimpack power, player skill, etc.
+- Mind cost based on Focus and Injury Treatment skill.
+ 
+src/server/zone/objects/creature/commands/TendDamageCommand.h
+- - - - - - -
+- Tend Damage is now the primary way to heal Action,
+- Mind cost based on Focus and Injury Treatment skill.
+- Reduced wounds.
+
+src/server/zone/objects/creature/commands/TendWoundCommand.h
+- - - - - - -
+- Mind cost based on Focus and Injury Treatment skill.
+- Increase wounds.
+ 
+src/server/zone/objects/creature/commands/TendCommand.h
+- - - - - - -
+- TendDamage heals Action based more on player skill and with an additional crit chance, but only heals 1 Health.
+- Both TendDamage and TendWound only cause Mind wounds, no longer wounds Focus and Willpower. 
+
+src/server/zone/objects/creature/commands/QuickHealCommand.h
+- - - - - - -
+- Made this into an "Oh Shit" self heal button that can now be used in combat.
+- Still heals both Health and Action.
+- Increased min possible healing to 400. Max is 400 + random(350 + Injury Treatment Skill).
+- Mind cost based on Focus and Injury Treatment skill.
+- Increased Mind wounds to healed amount / 20, but no longer wounds Focus and Willpower.
+
+src/server/zone/objects/creature/commands/HealStateCommand.h
+- - - - - - -
+- Mind cost based on Focus and Injury Treatment skill.
+
+tre/datatables/skill/skills.iff
+- - - - - - -
+- Combat Medic removed, with its abilities and craftables megered into Doctor. 
+- Doctor Buff application and buff crafting moved to xx22 Medic. Note that I already nerfed buffs to keep combat challenging.
+- Cure Poison and Cure Disease moved to 4x4x Medic.
+- Cure State moved to Master Medic.  
+- 15 total points of Wound Healing and Wound Healing Speed moved down to 22xx Medic, 44xx Medic, and Master Medic.
+
+UPDATE 1:
+
+scripts/object/tangible/medicine/crafted/[A Type Enhance/Cure]
+- - - - - - -
+- Reduced the required medicine use skill to match Medic levels where the abilities are granted. 
+
+scripts/object/draft_schematic/chemistry/component/dispersal_mechanism_advanced.lua
+scripts/object/draft_schematic/chemistry/component/liquid_delivery_suspension_advanced.lua
+scripts/object/draft_schematic/chemistry/component/release_mechanism_duration_advanced.lua
+- - - - - - -
+- Changed ingredients so that they do not require any from the disabled planets. 
+- Increased units used in Advanced Liquid Suspension to match other advanced components.
+
+UPDATE 2: 
+
+src/server/zone/managers/combat/CombatManager.cpp
+- - - - - - -
+- Fixed some issue discovered after more testing. 
+- Fixed issue where specials that hit two pools would do too much damage. 
+- Fixed issue with head armor resists not being used. 
+- Reduced action damage by 3x for better combat balance - we want player special attacks to use it, and we want enemy attacks to drop it, and we want player mind to restore it, but we don't want it to be too easy for the MOB to starve the player of Action, because its recovery is puposefully limited by a finite amount of Mind. 
+- Restored Mind pool as an option for NPC/Creature attacks.
+- Changed random attack calculation to choose Action less and Mind only 3% of the time. Player has no way to modify this RNG.
+- Mind hits are treated at as a "critical hit" doing 25% more Health damage and full Action damage.
+- Mind hits always cause Focus/Willpower wounds. 
+- Action hits have a chance to cause Mind wounds, as Action is roughly 3x more likely to be hit than Mind.
+- Moved the rally concept from Health damage to Mind damage, as the math/logic was not what I wanted.
+- Rally: When hit in the Mind (crit Health/Action damage), players get a Mind heal to help them recover. Max 320, Min 205
+- Capped the extra wounds to primary stats at Min 2, Max 12, based upon the weapon's wound percentage value.
+- Special Attack Cost is now the highest of the values on the weapon, rather than the average of all three values. Average value was too low.
+
+scripts/commands/bleedingShot.lua
+scripts/commands/melee2hMindHit1.lua
+scripts/commands/melee2hMindHit2.lua
+scripts/commands/mindShot1.lua
+scripts/commands/mindShot2.lua
+scripts/commands/saberSlash1.lua
+scripts/commands/saberSlash2.lua
+- - - - - - -
+- Replaced Mind DoT with Action DoT.
+
+
+
+
+
+Junk Dealers: Better Prices for Crafted Items!
+= = = = = = = = = = = = = = = = = 
+src/server/zone/managers/crafting/CraftingManager.idl
+src/server/zone/managers/crafting/CraftingManagerImplementation.cpp
+src/server/zone/managers/crafting/labratories/SharedLabratory.cpp
+src/server/zone/managers/crafting/labratories/SharedLabratory.h
+src/server/zone/objects/player/sessions/crafting/CraftingSessionImplementation.cpp
+- - - - - - -
+- Dramatically improved the Junk Dealer values!
+- Complexity is no longer used as it is too arbitrary, thus experimentation is not required to get a good price.
+- Price is now based up on units of resources used (in the final combination), resource quality, player skill, and a bit of luck.
+- Subcomponents are taken into account, but based only upon an estimate of their resource quantity.
+- Optional component slots that are empty are ignored, ya cheeky pirates!
+- Player skill is capped at 120, because every profession can hit it (and Shipwright Engines +17 is too good of a bonus).
+- Max price is capped around 35,000 credits, "in a perfect world".
+- Explore the math if you want to ruin the mystery of it all :)
+
+
+
+
+________________________________________________________
+--- P L A N E D ---
+========================================================
+
+
+
+The Great Decluttering
+= = = = = = = = = = = = = = = = = 
+- Focus on one location at a time. 
+- Combination of World Snapshot and Lua file editing.
+- Remove redundant stuff, such as mission terminals, bazaar terminals, etc. 
+- Replace and replace many useless characters (especially ones that don't seem to make any sense...) with quest givers from the disabled planets, merchants, new quest givers, and NPCs tied to world factions that can be attacked.
+- Have 3 trainers for each elite profession, spread around the galaxy and locked behind world faction related content.
+- Prepair Rebel/Imperial areas in preperation for the removal of the "on leave" status and the addition of the tresspassing concept. 
+- Limit Junk Dealers to those who have names and personalities, with no more than two per type of junk. This makes the system more character/location driven and less gamey.
+
+
+
+Merchant System Improvements
+= = = = = = = = = = = = = = = = = 
+- Inject a reply option that opens an inventory window where the player can fully inspect the items that are for sale.
+- Options for Smugglers to try for discounts. 
+- Stock limations based on month, scarcity, faction standing, and stock levels.
+- Add more merchants, mostly as part of world faction content. This includes Geo Cave loot and other high priced consuables that will act as major credit sinks.
+- Improve the pricing logic for Junk Dealers. 
+
+
+
+Imperial / Rebel Improvements
+= = = = = = = = = = = = = = = = = 
+- Remove On leave status, so that once a player chooses a side the content is always geared toward that choice.
+- Add tiggers to prevent neutral characters from tresspassing on Rebel/Imperial land. 
+- Imprison neutrals who are caught tresspassing. Another character will have to bail (NPC conversation + credits) them out or break them out (quest + combat).
+- Add a free travel system that links faction facilities together. 
+- Add more faction items for purchase.
+
+
+
+
+Creature/NPC Diversification
+= = = = = = = = = = = = = = = = = 
+- Story based content that adds creatures from the disabled planets, such as...
+- The zoo gone wrong on Tatooine that turned into a valley where Bio-Engineers from Bestine study the accidentally wild creatures.
+- The Northern Endorian infestation of creatures from Yavin4, centered around the abandonded Imperial outpost. 
+- And adding other critters to the spawn tables of Dantooine, Dathomir, Endor, Lok, and Tatooine.
+- World faction driven content where players can earn/lose faction with NPCs who live on the disabled planets (Corellia, Talus, Naboo, Rori, and Yavin4).
+
+
+
+
+Personal Ship Improvements
+= = = = = = = = = = = = = = = = = 
+- It's a little wonky (and a bit buggy) as it is. 
+- I would like to tie the functionality to an inventory item so it can be placed on the toolbar and used. 
+- The ship flies down to the player's position and the player double clicks it to get in.
+- Only works on Tatooine, as that's where they are stationed.
+- Move the Onak out of the Mos Espa starport and put a bunch of the fighters in there. Add some related quest content.
+
+
+
+
